@@ -1,7 +1,15 @@
 package com.example.restfulapipractice.controller;
 
+import com.example.restfulapipractice.constant.StatusEnum;
+import com.example.restfulapipractice.model.Message;
 import com.example.restfulapipractice.model.User;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +36,18 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public User saveUser(@RequestBody User user){
+    public ResponseEntity<Message> saveUser(@RequestBody User user){
         // user 객체를 받아서 이름을 변경
         user.setName("user2");
-        return user;
+
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("성공 코드");
+        message.setData(user);
+
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -41,11 +57,6 @@ public class UserController {
         user.setName("user1");
         user.setStudentId(1234L);
         return user;
-    }
-
-    @PostMapping("/{user}")
-    public String findByName2(@PathVariable("name") String name){
-        return
     }
 
 }
